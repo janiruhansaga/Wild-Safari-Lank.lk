@@ -157,10 +157,16 @@
                             <h2 class="text-2xl font-bold text-gray-800">Safari Packages</h2>
                             <p class="text-gray-500 text-sm">Manage tours, prices, and visibility.</p>
                         </div>
-                        <button onclick="savePackages()"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition flex items-center gap-2">
-                            <i class="fas fa-check-double"></i> Save All Packages
-                        </button>
+                        <div class="flex gap-2 w-full sm:w-auto">
+                            <button onclick="addNewPackage()"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition flex-1 sm:flex-none flex justify-center items-center gap-2">
+                                <i class="fas fa-plus"></i> Add New
+                            </button>
+                            <button onclick="savePackages()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition flex-1 sm:flex-none flex justify-center items-center gap-2">
+                                <i class="fas fa-save"></i> Save All
+                            </button>
+                        </div>
                     </div>
                     <div id="packages-loader"
                         class="bg-white rounded-xl shadow-sm border border-gray-200 text-center py-12 text-gray-500"><i
@@ -414,20 +420,57 @@
 
                 const html = `
                     <div class="bg-white rounded-xl shadow-sm border ${isHidden ? 'border-red-200 bg-red-50' : 'border-gray-200'} overflow-hidden">
-                        <div class="bg-gray-50 border-b p-4 flex justify-between items-center cursor-pointer" onclick="document.getElementById('pkg-body-${index}').classList.toggle('hidden')">
+                        <div class="bg-gray-50 border-b p-4 flex justify-between items-center cursor-pointer hover:bg-gray-100 transition" onclick="document.getElementById('pkg-body-${index}').classList.toggle('hidden')">
                             <div class="flex items-center gap-3">
                                 <span class="px-2.5 py-1 rounded text-xs font-bold ${isHidden ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${isHidden ? 'INACTIVE' : 'ACTIVE'}</span>
                                 <h3 class="font-bold text-gray-800">${name}</h3>
                             </div>
-                            <i class="fas fa-chevron-down text-gray-400"></i>
+                            <div class="flex items-center gap-3">
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-semibold flex items-center gap-1 pointer-events-none">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <i class="fas fa-chevron-down text-gray-400 ml-2"></i>
+                            </div>
                         </div>
-                        <div id="pkg-body-${index}" class="p-5 hidden grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
-                            ${editFieldsHtml}
+                        <div id="pkg-body-${index}" class="p-5 hidden border-t">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mb-4">
+                                ${editFieldsHtml}
+                            </div>
+                            <div class="flex justify-end pt-4 mt-2 border-t">
+                                <button onclick="deletePackage(${index})" class="text-red-500 hover:text-red-700 font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition text-sm flex items-center gap-2">
+                                    <i class="fas fa-trash-alt"></i> Delete Package
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
                 listContainer.insertAdjacentHTML('beforeend', html);
             });
+        }
+
+        // Add New Package
+        function addNewPackage() {
+            const newPkg = {};
+            if (appData.packages.length > 0) {
+                // clone headers from the first existing package smoothly
+                Object.keys(appData.packages[0]).forEach(key => newPkg[key] = "");
+            }
+            newPkg.name = "New Package Draft";
+            appData.packages.unshift(newPkg); // add to top
+            renderPackages();
+
+            // open first newly added accordion
+            const body = document.getElementById('pkg-body-0');
+            if (body) body.classList.remove('hidden');
+        }
+
+        // Delete Package
+        async function deletePackage(index) {
+            if (confirm("Are you sure you want to permanently delete this package? This cannot be undone.")) {
+                appData.packages.splice(index, 1);
+                await sendUpdate('updatePackages', appData.packages);
+                renderPackages(); // re-render the list without the deleted item
+            }
         }
 
         // Save Packages Array 
