@@ -68,13 +68,6 @@
             </div>
             <form id="login-form">
                 <div class="mb-5">
-                    <label class="block text-gray-700 font-semibold mb-2">Web App API URL</label>
-                    <input type="text" id="api-url"
-                        class="w-full px-4 py-3 rounded-lg border outline-none bg-gray-50 text-sm placeholder-gray-400"
-                        value="https://script.google.com/macros/s/AKfycbxaIFVBTXAUPN8oawOeXsILEME9M9cSy9FvfHvcx2gMPkp1H5Dj4YaKufPRsAyon8Tf-Wpgh9A/exec"
-                        required>
-                </div>
-                <div class="mb-5">
                     <label class="block text-gray-700 font-semibold mb-2">Username</label>
                     <input type="text" id="admin-username"
                         class="w-full px-4 py-3 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
@@ -219,9 +212,9 @@
     <!-- Application Script -->
     <script>
         // State
+        const API_URL = "https://script.google.com/macros/s/AKfycbxaIFVBTXAUPN8oawOeXsILEME9M9cSy9FvfHvcx2gMPkp1H5Dj4YaKufPRsAyon8Tf-Wpgh9A/exec";
         let apiToken = localStorage.getItem('safari_admin_token') || '';
         let apiUser = localStorage.getItem('safari_admin_user') || '';
-        let apiUrl = localStorage.getItem('safari_api_url') || document.getElementById('api-url').value;
         let appData = { settings: [], packages: [], bookings: [] };
 
         const loginScreen = document.getElementById('login-screen');
@@ -229,7 +222,6 @@
 
         // Check authentication on load
         if (apiToken && apiUser) {
-            document.getElementById('api-url').value = apiUrl;
             loginScreen.classList.add('hidden');
             dashboard.classList.remove('hidden');
             switchTab('settings');
@@ -242,7 +234,6 @@
             const btn = document.getElementById('login-btn');
             const spinner = document.getElementById('login-spinner');
 
-            apiUrl = document.getElementById('api-url').value.trim();
             const user = document.getElementById('admin-username').value.trim();
             const pwd = document.getElementById('admin-password').value;
 
@@ -251,7 +242,7 @@
 
             try {
                 // We use GET to verify the token quickly
-                const res = await fetch(`${apiUrl}?action=verify&user=${encodeURIComponent(user)}&token=${encodeURIComponent(pwd)}`);
+                const res = await fetch(`${API_URL}?action=verify&user=${encodeURIComponent(user)}&token=${encodeURIComponent(pwd)}`);
                 const json = await res.json();
 
                 if (json.status === 'success' && json.data.valid) {
@@ -259,7 +250,6 @@
                     apiUser = user;
                     localStorage.setItem('safari_admin_token', apiToken);
                     localStorage.setItem('safari_admin_user', apiUser);
-                    localStorage.setItem('safari_api_url', apiUrl);
                     showToast('Logged in successfully!');
 
                     loginScreen.classList.add('hidden');
@@ -316,7 +306,7 @@
         // Fetch Data from Google Apps Script
         async function fetchDashboardData() {
             try {
-                const res = await fetch(`${apiUrl}?action=getAll&user=${encodeURIComponent(apiUser)}&token=${encodeURIComponent(apiToken)}`);
+                const res = await fetch(`${API_URL}?action=getAll&user=${encodeURIComponent(apiUser)}&token=${encodeURIComponent(apiToken)}`);
                 const json = await res.json();
 
                 if (json.status === 'success') {
@@ -495,7 +485,7 @@
 
             try {
                 // To avoid typical CORS POST issues with Apps Script, we wrap stringified JSON inside URLSearchParams payload.
-                const res = await fetch(apiUrl, {
+                const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: new URLSearchParams({ payload: JSON.stringify(payloadData) })
