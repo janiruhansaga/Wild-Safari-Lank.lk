@@ -20,19 +20,19 @@ function doGet(e) {
     }
 
     if (action === "getSettings") {
-        const sheet = ss.getSheetByName("Site_Settings") || ss.getSheetByName("Settings");
+        const sheet = ss.getSheetByName("Site_Settings") || ss.getSheetByName("Settings") || ss.getSheets()[0];
         if (!sheet) return respondJSON({ status: "error", message: "Settings sheet not found." });
         return respondJSON({ status: "success", data: getSheetDataAsObject(sheet) });
     }
 
     if (action === "getPackages") {
-        const sheet = ss.getSheetByName("Safari_Packages") || ss.getSheetByName("Packages") || ss.getSheetByName("Sheet1");
+        const sheet = ss.getSheetByName("Safari_Packages") || ss.getSheetByName("Packages") || ss.getSheetByName("Sheet1") || ss.getSheets()[0];
         if (!sheet) return respondJSON({ status: "error", message: "Packages sheet not found." });
         return respondJSON({ status: "success", data: getSheetDataAsArray(sheet) });
     }
 
     if (action === "getBookings") {
-        const sheet = ss.getSheetByName("Bookings");
+        const sheet = ss.getSheetByName("Bookings") || ss.getSheets()[0];
         if (!sheet) return respondJSON({ status: "error", message: "Bookings sheet not found." });
         return respondJSON({ status: "success", data: getSheetDataAsArray(sheet) });
     }
@@ -62,13 +62,13 @@ function doPost(e) {
         const action = payload.action;
 
         if (action === "updateSettings") {
-            const sheet = ss.getSheetByName("Site_Settings") || ss.getSheetByName("Settings");
+            const sheet = ss.getSheetByName("Site_Settings") || ss.getSheetByName("Settings") || ss.getSheets()[0];
             updateSettingsSheet(sheet, payload.data);
             return respondJSON({ status: "success" });
         }
 
         if (action === "updatePackage") {
-            const sheet = ss.getSheetByName("Safari_Packages") || ss.getSheetByName("Packages") || ss.getSheetByName("Sheet1");
+            const sheet = ss.getSheetByName("Safari_Packages") || ss.getSheetByName("Packages") || ss.getSheetByName("Sheet1") || ss.getSheets()[0];
             updatePackageRow(sheet, payload.data);
             return respondJSON({ status: "success" });
         }
@@ -83,7 +83,7 @@ function doPost(e) {
 // Handle standard HTML form submission
 function handleLegacyBooking(e) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName("Bookings");
+    const sheet = ss.getSheetByName("Bookings") || ss.getSheets()[0];
 
     if (!sheet) throw new Error("Bookings sheet missing!");
 
