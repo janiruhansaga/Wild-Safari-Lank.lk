@@ -4,294 +4,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Safari Sri Lanka</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,600&display=swap"
-        rel="stylesheet">
+    <title>Secure Admin Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-
     <style>
-        :root {
-            --primary-color: #2D4C3B;
-            --secondary-color: #E27D60;
-            --accent-color: #E8A87C;
-            --bg-color: #F8F5F0;
-            --text-color: #333333;
-            --white: #FFFFFF;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-color);
-        }
-
-        .admin-header {
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 1.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .back-btn {
-            background: transparent;
-            border: 1px solid var(--white);
-            color: var(--white);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: var(--white);
-            color: var(--primary-color);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .card {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card i {
-            font-size: 3rem;
-            color: var(--secondary-color);
-            margin-bottom: 1rem;
-        }
-
-        .card h3 {
-            margin-bottom: 0.5rem;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .btn-action {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.8rem 1.5rem;
-            background: var(--secondary-color);
-            color: var(--white);
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 500;
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10B981;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            opacity: 0;
             transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 50;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
         }
 
-        .btn-action:hover {
-            opacity: 0.9;
+        .toast.error {
+            background: #EF4444;
         }
 
-        .data-card {
-            background: var(--white);
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
+        .toast.show {
+            opacity: 1;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .slide-up {
+            animation: slideUp 0.3s ease-out forwards;
         }
 
-        th,
-        td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-        th {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .status {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status.active {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status.inactive {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .loader {
-            display: inline-block;
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid var(--secondary-color);
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            100% {
-                transform: rotate(360deg);
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 
-<body>
-    <header class="admin-header">
-        <h1>Safari Admin Dashboard</h1>
-        <a href="index.html" class="back-btn"><i class="fas fa-home"></i> View Live Site</a>
-    </header>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-    <div class="container">
-        <!-- Quick Action Cards -->
-        <div class="dashboard-grid">
-            <div class="card">
-                <i class="fas fa-table"></i>
-                <h3>Google Sheets Control</h3>
-                <p>Edit packages, settings, and reviews live.</p>
-                <a href="https://docs.google.com/spreadsheets/" target="_blank" class="btn-action">Open Google
-                    Sheets</a>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Notification</div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8 slide-up">
+            <div class="text-center mb-8">
+                <i class="fas fa-shield-alt text-5xl text-blue-600 mb-4"></i>
+                <h2 class="text-2xl font-bold text-gray-800">Admin Login</h2>
+                <p class="text-gray-500 text-sm mt-2">Enter your API URL (if changed) and Password provided in your
+                    code.</p>
             </div>
-
-            <div class="card">
-                <i class="fas fa-sync-alt"></i>
-                <h3>Clear Cache & Refresh</h3>
-                <p>Force the website to sync instantly with Sheets.</p>
-                <button onclick="clearCache()" class="btn-action" style="cursor: pointer; border: none;">Clear Cache
-                    Now</button>
-            </div>
-
-            <div class="card">
-                <i class="fas fa-envelope-open-text"></i>
-                <h3>Manage Apps Script</h3>
-                <p>Fix or edit your form webhook logging scripts.</p>
-                <a href="https://script.google.com/home" target="_blank" class="btn-action">Open Script Editor</a>
-            </div>
-        </div>
-
-        <!-- Read Only Data Overview -->
-        <div class="data-card">
-            <h2 style="font-family: 'Playfair Display', serif; margin-top:0;">Live Tour Packages Preview</h2>
-            <p style="font-size: 0.9rem; color: #666;">(Viewing data pulled directly from your public CSV)</p>
-
-            <div style="overflow-x:auto;">
-                <table id="packages-table">
-                    <thead>
-                        <tr>
-                            <th>Package Name</th>
-                            <th>Time / Duration</th>
-                            <th>Price</th>
-                            <th>Badge</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" style="text-align: center;">
-                                <div class="loader"></div> Loading from Sheets...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <form id="login-form">
+                <div class="mb-5">
+                    <label class="block text-gray-700 font-semibold mb-2">Web App API URL</label>
+                    <input type="text" id="api-url"
+                        class="w-full px-4 py-3 rounded-lg border outline-none bg-gray-50 text-sm placeholder-gray-400"
+                        value="https://script.google.com/macros/s/AKfycbwZbqSLQpPdGQSvFnmdsc1SHLzEBzLS3SOAE6hDNt_QRF5-bXm4WozxxWr6_DfpAlA1Qg/exec"
+                        required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Dashboard Password</label>
+                    <input type="password" id="admin-password"
+                        class="w-full px-4 py-3 rounded-lg border focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                        required placeholder="••••••••">
+                    <p class="text-xs text-gray-400 mt-2"><i class="fas fa-info-circle"></i> Default is
+                        <code>admin123</code></p>
+                </div>
+                <button type="submit" id="login-btn"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 flex justify-center items-center gap-2">
+                    <span>Secure Login</span>
+                    <i id="login-spinner" class="fas fa-spinner fa-spin hidden"></i>
+                </button>
+            </form>
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-sm text-blue-600 hover:text-blue-800"><i class="fas fa-arrow-left"></i>
+                    Back to Website</a>
             </div>
         </div>
     </div>
 
-    <script>
-        const PACKAGES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?gid=0&single=true&output=csv';
+    <!-- Dashboard Screen -->
+    <div id="dashboard" class="hidden min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="w-full md:w-64 bg-gray-900 text-white flex flex-col shadow-xl z-20">
+            <div class="p-6 text-xl font-bold border-b border-gray-800 flex justify-between items-center">
+                <span><i class="fas fa-leaf text-green-400"></i> Safari Admin</span>
+            </div>
+            <div class="flex flex-row md:flex-col p-4 gap-2 overflow-x-auto">
+                <button onclick="switchTab('settings')" id="tab-btn-settings"
+                    class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition">
+                    <i class="fas fa-cog"></i> <span class="hidden md:inline">Site Settings</span>
+                </button>
+                <button onclick="switchTab('packages')" id="tab-btn-packages"
+                    class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-box"></i> <span class="hidden md:inline">Packages</span>
+                </button>
+                <button onclick="switchTab('bookings')" id="tab-btn-bookings"
+                    class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-envelope"></i> <span class="hidden md:inline">Bookings</span>
+                </button>
+                <div class="mt-auto hidden md:block pt-8"></div>
+                <button onclick="logout()"
+                    class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 text-red-400 hover:bg-gray-800 hover:text-red-300 rounded-lg transition">
+                    <i class="fas fa-sign-out-alt"></i> <span class="hidden md:inline">Logout</span>
+                </button>
+            </div>
+        </div>
 
-        function clearCache() {
-            localStorage.clear();
-            alert("Website Cache Cleared! The live site will now fetch the latest data from Google Sheets.");
-            loadPackages();
+        <!-- Main Content Area -->
+        <div class="flex-1 p-4 md:p-8 overflow-y-auto">
+            <div class="max-w-5xl mx-auto slide-up">
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" class="tab-content hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Site Settings</h2>
+                            <p class="text-gray-500 text-sm">Update your homepage text and global details.</p>
+                        </div>
+                        <button onclick="saveSettings()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition flex items-center gap-2">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div id="settings-loader" class="text-center py-12 text-gray-500"><i
+                                class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                            <p>Loading settings...</p>
+                        </div>
+                        <div id="settings-form" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Packages Tab -->
+                <div id="tab-packages" class="tab-content hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Safari Packages</h2>
+                            <p class="text-gray-500 text-sm">Manage tours, prices, and visibility.</p>
+                        </div>
+                        <button onclick="savePackages()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition flex items-center gap-2">
+                            <i class="fas fa-check-double"></i> Save All Packages
+                        </button>
+                    </div>
+                    <div id="packages-loader"
+                        class="bg-white rounded-xl shadow-sm border border-gray-200 text-center py-12 text-gray-500"><i
+                            class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                        <p>Loading packages...</p>
+                    </div>
+                    <div id="packages-list" class="space-y-6 hidden">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <!-- Bookings Tab -->
+                <div id="tab-bookings" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">Recent Bookings</h2>
+                        <p class="text-gray-500 text-sm">Lead inquiries fetched directly from Google Sheets.</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
+                        <div id="bookings-loader" class="text-center py-12 text-gray-500"><i
+                                class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                            <p>Loading bookings...</p>
+                        </div>
+                        <div class="overflow-x-auto hidden" id="bookings-table-container">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="p-4 font-semibold text-gray-600 text-sm whitespace-nowrap">Date</th>
+                                        <th class="p-4 font-semibold text-gray-600 text-sm whitespace-nowrap">Customer
+                                        </th>
+                                        <th class="p-4 font-semibold text-gray-600 text-sm whitespace-nowrap">Contact
+                                        </th>
+                                        <th class="p-4 font-semibold text-gray-600 text-sm whitespace-nowrap">Package
+                                        </th>
+                                        <th class="p-4 font-semibold text-gray-600 text-sm">Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookings-table-body" class="divide-y divide-gray-100">
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        // State
+        let apiToken = localStorage.getItem('safari_admin_token') || '';
+        let apiUrl = localStorage.getItem('safari_api_url') || document.getElementById('api-url').value;
+        let appData = { settings: [], packages: [], bookings: [] };
+
+        const loginScreen = document.getElementById('login-screen');
+        const dashboard = document.getElementById('dashboard');
+
+        // Check authentication on load
+        if (apiToken) {
+            document.getElementById('api-url').value = apiUrl;
+            loginScreen.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            switchTab('settings');
+            fetchDashboardData();
         }
 
-        function loadPackages() {
-            Papa.parse(PACKAGES_CSV_URL, {
-                download: true,
-                header: true,
-                complete: function (results) {
-                    renderTable(results.data);
-                },
-                error: function (err) {
-                    document.getElementById('packages-table').innerHTML = `<tr><td colspan="5">Error loading data.</td></tr>`;
+        // Handle Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const spinner = document.getElementById('login-spinner');
+
+            apiUrl = document.getElementById('api-url').value.trim();
+            const pwd = document.getElementById('admin-password').value;
+
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+
+            try {
+                // We use GET to verify the token quickly
+                const res = await fetch(`${apiUrl}?action=verify&token=${encodeURIComponent(pwd)}`);
+                const json = await res.json();
+
+                if (json.status === 'success' && json.data.valid) {
+                    apiToken = pwd;
+                    localStorage.setItem('safari_admin_token', apiToken);
+                    localStorage.setItem('safari_api_url', apiUrl);
+                    showToast('Logged in successfully!');
+
+                    loginScreen.classList.add('hidden');
+                    dashboard.classList.remove('hidden');
+                    switchTab('settings');
+                    fetchDashboardData();
+                } else {
+                    showToast(json.message || 'Invalid Password', true);
                 }
+            } catch (err) {
+                showToast('Failed to connect to API. Is the URL correct?', true);
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        });
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('safari_admin_token');
+            apiToken = '';
+            dashboard.classList.add('hidden');
+            loginScreen.classList.remove('hidden');
+            document.getElementById('admin-password').value = '';
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('[id^="tab-btn-"]').forEach(btn => {
+                btn.classList.add('hover:bg-gray-800');
+                btn.classList.remove('bg-gray-800', 'text-blue-400');
+            });
+            const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+            activeBtn.classList.remove('hover:bg-gray-800');
+            activeBtn.classList.add('bg-gray-800', 'text-blue-400');
+        }
+
+        // Toast Notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            if (isError) toast.classList.add('error');
+            else toast.classList.remove('error');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Fetch Data from Google Apps Script
+        async function fetchDashboardData() {
+            try {
+                const res = await fetch(`${apiUrl}?action=getAll&token=${encodeURIComponent(apiToken)}`);
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    appData = json.data;
+                    renderSettings();
+                    renderPackages();
+                    renderBookings();
+                } else {
+                    showToast(json.message, true);
+                    if (json.message.includes('Invalid token')) logout();
+                }
+            } catch (err) {
+                showToast('Error syncing with Google Sheets', true);
+                console.error(err);
+            }
+        }
+
+        // Render Settings Form
+        function renderSettings() {
+            document.getElementById('settings-loader').classList.add('hidden');
+            const formContainer = document.getElementById('settings-form');
+            formContainer.classList.remove('hidden');
+            formContainer.innerHTML = '';
+
+            if (appData.settings.length === 0) {
+                appData.settings.push({ "site_name": "", "hero_title": "", "hero_subtitle": "", "contact_whatsapp": "" });
+            }
+
+            const row = appData.settings[0];
+            const keys = Object.keys(row);
+
+            keys.forEach(key => {
+                // Make friendly labels
+                const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                const html = `
+                    <div class="mb-4">
+                        <label class="block text-gray-700 font-semibold mb-2 text-sm">${label}</label>
+                        <input type="text" data-setting-key="${key}" value="${row[key] || ''}" 
+                            class="settings-input w-full px-4 py-2 rounded border focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+                    </div>
+                `;
+                formContainer.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        function renderTable(data) {
-            const tbody = document.querySelector('#packages-table tbody');
+        // Save Settings via POST Payload
+        async function saveSettings() {
+            const inputs = document.querySelectorAll('.settings-input');
+            const newObj = {};
+            inputs.forEach(inp => {
+                newObj[inp.getAttribute('data-setting-key')] = inp.value;
+            });
+            appData.settings[0] = newObj;
+
+            await sendUpdate('updateSettings', appData.settings);
+        }
+
+        // Render Packages
+        function renderPackages() {
+            document.getElementById('packages-loader').classList.add('hidden');
+            const listContainer = document.getElementById('packages-list');
+            listContainer.classList.remove('hidden');
+            listContainer.innerHTML = '';
+
+            appData.packages.forEach((pkg, index) => {
+                const name = pkg.name || pkg.Title || "Unnamed Package";
+                const isHidden = (pkg.is_active && String(pkg.is_active).toUpperCase() === 'FALSE') || (pkg.Status && String(pkg.Status).toUpperCase() === 'INACTIVE');
+
+                // Keep track of keys organically to generate fields
+                let editFieldsHtml = '';
+                Object.keys(pkg).forEach(key => {
+                    const type = key.toLowerCase().includes('desc') || key.toLowerCase().includes('message') ? 'textarea' : 'input';
+                    if (type === 'textarea') {
+                        editFieldsHtml += `
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">${key}</label>
+                                <textarea data-pkg-idx="${index}" data-pkg-key="${key}" rows="2" class="package-input w-full px-3 py-2 border rounded focus:border-blue-500 outline-none text-sm">${pkg[key]}</textarea>
+                            </div>
+                        `;
+                    } else if (key.toLowerCase() === 'is_active' || key.toLowerCase() === 'status') {
+                        // Create a select for Status/is_active
+                        const val = String(pkg[key]).toUpperCase();
+                        const options = (key.toLowerCase() === 'is_active')
+                            ? `<option value="TRUE" ${val !== 'FALSE' ? 'selected' : ''}>Active (Show)</option><option value="FALSE" ${val === 'FALSE' ? 'selected' : ''}>Inactive (Hide)</option>`
+                            : `<option value="ACTIVE" ${val !== 'INACTIVE' ? 'selected' : ''}>Active</option><option value="INACTIVE" ${val === 'INACTIVE' ? 'selected' : ''}>Inactive</option>`;
+
+                        editFieldsHtml += `
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">${key}</label>
+                                <select data-pkg-idx="${index}" data-pkg-key="${key}" class="package-input w-full px-3 py-2 border rounded focus:border-blue-500 outline-none text-sm bg-white">
+                                    ${options}
+                                </select>
+                            </div>
+                        `;
+                    } else {
+                        editFieldsHtml += `
+                            <div class="mb-3">
+                                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">${key}</label>
+                                <input type="text" data-pkg-idx="${index}" data-pkg-key="${key}" value="${pkg[key] || ''}" class="package-input w-full px-3 py-2 border rounded focus:border-blue-500 outline-none text-sm">
+                            </div>
+                        `;
+                    }
+                });
+
+                const html = `
+                    <div class="bg-white rounded-xl shadow-sm border ${isHidden ? 'border-red-200 bg-red-50' : 'border-gray-200'} overflow-hidden">
+                        <div class="bg-gray-50 border-b p-4 flex justify-between items-center cursor-pointer" onclick="document.getElementById('pkg-body-${index}').classList.toggle('hidden')">
+                            <div class="flex items-center gap-3">
+                                <span class="px-2.5 py-1 rounded text-xs font-bold ${isHidden ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}">${isHidden ? 'INACTIVE' : 'ACTIVE'}</span>
+                                <h3 class="font-bold text-gray-800">${name}</h3>
+                            </div>
+                            <i class="fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                        <div id="pkg-body-${index}" class="p-5 hidden grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                            ${editFieldsHtml}
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // Save Packages Array 
+        async function savePackages() {
+            const inputs = document.querySelectorAll('.package-input');
+            inputs.forEach(inp => {
+                const idx = parseInt(inp.getAttribute('data-pkg-idx'));
+                const key = inp.getAttribute('data-pkg-key');
+                appData.packages[idx][key] = inp.value;
+            });
+            await sendUpdate('updatePackages', appData.packages);
+            renderPackages(); // Rerender to show visual active/inactive state changes
+        }
+
+        // Render Bookings Read Only
+        function renderBookings() {
+            document.getElementById('bookings-loader').classList.add('hidden');
+            document.getElementById('bookings-table-container').classList.remove('hidden');
+            const tbody = document.getElementById('bookings-table-body');
             tbody.innerHTML = '';
 
-            if (!data || data.length === 0 || (!data[0].Title && !data[0].name)) {
-                tbody.innerHTML = `<tr><td colspan="5">No valid package entries found. Ensure headers match!</td></tr>`;
+            // Sort newest first assuming Date is first column mathematically
+            const reversed = [...appData.bookings].reverse();
+
+            if (reversed.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-500">No bookings found in the Google Sheet.</td></tr>`;
                 return;
             }
 
-            data.forEach(item => {
-                const title = item.Title || item.name;
-                if (!title) return;
-
-                const isActive = item.is_active ? String(item.is_active).toUpperCase() : null;
-                const legacyStatus = item.Status ? String(item.Status).toUpperCase() : null;
-                const isHidden = isActive === 'FALSE' || legacyStatus === 'INACTIVE';
-                const statusHtml = isHidden ? '<span class="status inactive">Hidden</span>' : '<span class="status active">Active</span>';
-
-                const timeStr = `${item.Time || ''} (${item.Duration || ''})`;
-                const priceStr = `${item.price_usd ? 'USD ' + item.price_usd : ''} ${item.price_lkr ? '/ LKR ' + item.price_lkr : ''}`;
-                const badgeStr = item.Badge || 'None';
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${title}</strong></td>
-                        <td>${timeStr !== ' ()' ? timeStr : '-'}</td>
-                        <td>${priceStr.trim() === '' ? '-' : priceStr}</td>
-                        <td>${badgeStr}</td>
-                        <td>${statusHtml}</td>
+            reversed.forEach(b => {
+                // Get values organically assuming typical headers map like Timestamp, Name, Email, Package, Message
+                const vals = Object.values(b);
+                const html = `
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="p-4 text-sm text-gray-500 whitespace-nowrap">${new Date(vals[0]).toLocaleString() !== 'Invalid Date' ? new Date(vals[0]).toLocaleDateString() : vals[0]}</td>
+                        <td class="p-4 font-semibold text-gray-800">${vals[1] || '-'}</td>
+                        <td class="p-4 text-sm text-blue-600">${vals[2] || '-'}</td>
+                        <td class="p-4"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs font-semibold">${vals[3] || 'None'}</span></td>
+                        <td class="p-4 text-sm text-gray-600 max-w-xs truncate" title="${vals[4] || ''}">${vals[4] || '-'}</td>
                     </tr>
                 `;
+                tbody.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        document.addEventListener('DOMContentLoaded', loadPackages);
+        // Master API POST Call
+        async function sendUpdate(action, dataArray) {
+            showToast('Saving changes...', false);
+            const payloadData = {
+                token: apiToken,
+                action: action,
+                data: dataArray
+            };
+
+            try {
+                // To avoid typical CORS POST issues with Apps Script, we wrap stringified JSON inside URLSearchParams payload.
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ payload: JSON.stringify(payloadData) })
+                });
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    showToast('Successfully saved to Google Sheets!');
+                } else {
+                    showToast(json.message || 'Error saving data', true);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Network error while saving.', true);
+            }
+        }
     </script>
 </body>
 
