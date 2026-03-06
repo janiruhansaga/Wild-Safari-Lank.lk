@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experience the Wild: Premium Jeep Safari Tours in Sri Lanka</title>
+    <meta name="description"
+        content="Book your premium Jeep Safari adventure in Sri Lanka. Professional guides, comfortable 4x4 vehicles, and unforgettable wildlife encounters with leopards and elephants.">
+    <!-- Basic Caching Meta Tags -->
+    <meta http-equiv="Cache-Control" content="max-age=31536000">
+
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- PapaParse for parsing Google Sheets CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,600&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">SriLanka<span>Safari</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#packages">Packages</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="#contact" class="btn-primary-small">Book Now</a></li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-overlay"></div>
+        <!-- The background image will be set via CSS using the generated hero image -->
+        <div class="container hero-content">
+            <h1 class="fade-in-up">Experience the Wild</h1>
+            <h2 class="fade-in-up delay-1">Premium Jeep Safari Tours in Sri Lanka</h2>
+            <p class="fade-in-up delay-2">Professional guides, comfortable 4x4 vehicles, and unforgettable wildlife
+                encounters.</p>
+            <div class="hero-btns fade-in-up delay-3">
+                <a href="https://wa.me/94770000000" target="_blank" class="btn-primary"><i class="fab fa-whatsapp"></i>
+                    Book Your Safari Now</a>
+                <a href="#packages" class="btn-secondary">Explore Packages</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packages" class="packages bg-light">
+        <div class="container">
+            <h2 class="section-title">Our Safari Packages</h2>
+            <div class="package-grid" id="dynamic-packages">
+                <!-- Morning Safari -->
+                <div class="package-card fade-in-up">
+                    <div class="package-img">
+                        <img src="assets/peacock_safari.png" alt="Morning Safari">
+                        <div class="package-badge">Popular</div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Morning Safari</h3>
+                        <p class="time"><i class="far fa-clock"></i> 6:00 AM - 10:00 AM</p>
+                        <p class="desc">Experience the park awakening. The best time for bird watching and spotting
+                            leopards on the prowl along with the morning sunlight.</p>
+                        <ul class="includes">
+                            <li><i class="fas fa-check-circle"></i> 4 Hours Duration</li>
+                            <li><i class="fas fa-check-circle"></i> Hotel Pick-up & Drop-off</li>
+                            <li><i class="fas fa-check-circle"></i> Water & Light Snacks</li>
+                        </ul>
+                        <a href="https://wa.me/94770000000?text=I'm%20interested%20in%20the%20Morning%20Safari"
+                            target="_blank" class="btn-primary-small w-100 text-center">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Evening Safari -->
+                <div class="package-card fade-in-up delay-1">
+                    <div class="package-img">
+                        <img src="assets/elephant_safari.png" alt="Evening Safari">
+                    </div>
+                    <div class="package-content">
+                        <h3>Evening Safari</h3>
+                        <p class="time"><i class="far fa-clock"></i> 2:30 PM - 6:30 PM</p>
+                        <p class="desc">Witness the stunning sunset views and the majestic elephants congregating around
+                            the lakes and watering holes.</p>
+                        <ul class="includes">
+                            <li><i class="fas fa-check-circle"></i> 4 Hours Duration</li>
+                            <li><i class="fas fa-check-circle"></i> Hotel Pick-up & Drop-off</li>
+                            <li><i class="fas fa-check-circle"></i> Water & Light Snacks</li>
+                        </ul>
+                        <a href="https://wa.me/94770000000?text=I'm%20interested%20in%20the%20Evening%20Safari"
+                            target="_blank" class="btn-primary-small w-100 text-center">Book Now</a>
+                    </div>
+                </div>
+
+                <!-- Full-Day Safari -->
+                <div class="package-card fade-in-up delay-2">
+                    <div class="package-img">
+                        <img src="assets/leopard_safari.png" alt="Full Day Safari">
+                        <div class="package-badge bg-accent">Ultimate</div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Full-Day Safari</h3>
+                        <p class="time"><i class="far fa-clock"></i> 6:00 AM - 6:00 PM</p>
+                        <p class="desc">The ultimate wildlife experience. Spend an entire day exploring deep into the
+                            national park for the highest chance of spotting a variety of wildlife.</p>
+                        <ul class="includes">
+                            <li><i class="fas fa-check-circle"></i> 12 Hours Duration</li>
+                            <li><i class="fas fa-check-circle"></i> Hotel Pick-up & Drop-off</li>
+                            <li><i class="fas fa-check-circle"></i> Breakfast, Lunch & Water</li>
+                        </ul>
+                        <a href="https://wa.me/94770000000?text=I'm%20interested%20in%20the%20Full-Day%20Safari"
+                            target="_blank" class="btn-primary-small w-100 text-center">Book Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">Wildlife & Adventures</h2>
+            <div class="gallery-grid" id="dynamic-gallery">
+                <div class="gallery-item fade-in-up"><img src="assets/leopard_safari.png" alt="Leopard"></div>
+                <div class="gallery-item fade-in-up delay-1"><img src="assets/elephant_safari.png" alt="Elephant"></div>
+                <div class="gallery-item gallery-large fade-in-up delay-2"><img src="assets/jeep_gallery.png"
+                        alt="Safari Jeep"></div>
+                <div class="gallery-item fade-in-up"><img src="assets/peacock_safari.png" alt="Peacock"></div>
+                <div class="gallery-item fade-in-up delay-1"><img src="assets/client_review.png" alt="Happy Customers">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section id="about" class="about bg-light">
+        <div class="container about-container">
+            <div class="about-text fade-in-up">
+                <h2 class="section-title" style="text-align: left;">About Our Safari</h2>
+                <p>We are a localized team of passionate wildlife enthusiasts and experienced safari drivers dedicated
+                    to providing the ultimate Sri Lankan safari experience. With years of tracking experience, our
+                    guides know exactly where to find the elusive leopards, majestic elephants, and vibrant birdlife.
+                </p>
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
+                        <div>
+                            <h4>Safety First</h4>
+                            <p>Properly maintained 4x4 vehicles ensuring a safe and comfortable ride.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon-box"><i class="fas fa-leaf"></i></div>
+                        <div>
+                            <h4>Eco-Friendly</h4>
+                            <p>We strictly follow park rules to minimize our impact on nature.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="icon-box"><i class="fas fa-user-tie"></i></div>
+                        <div>
+                            <h4>Expert Guides</h4>
+                            <p>Knowledgeable drivers with sharp eyes for wildlife tracking.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-img fade-in-up delay-2">
+                <div class="img-wrapper">
+                    <img src="assets/jeep_gallery.png" alt="Our Safari Jeep">
+                    <div class="experience-badge">
+                        <span class="num">10+</span>
+                        <span class="txt">Years<br>Experience</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Guests Say</h2>
+            <div class="testimonial-grid" id="dynamic-testimonials">
+                <div class="testimonial-card fade-in-up">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="review">"Absolutely incredible! Our guide was so knowledgeable and we managed to see two
+                        leopards in the morning safari. Highly recommended!"</p>
+                    <div class="customer">
+                        <img src="assets/client_review.png" alt="Customer" class="avatar">
+                        <div>
+                            <h4>Sarah & John</h4>
+                            <span>United Kingdom</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in-up delay-1">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    </div>
+                    <p class="review">"The afternoon safari was magical. We saw massive herds of elephants. The jeep was
+                        comfortable and the snacks provided were a nice touch."</p>
+                    <div class="customer">
+                        <div class="avatar-placeholder">M</div>
+                        <div>
+                            <h4>Markus T.</h4>
+                            <span>Germany</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in-up delay-2">
+                    <div class="stars">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="review">"Booked the full-day tour and it was worth every penny. Excellent communication
+                        via WhatsApp to arrange everything smoothly."</p>
+                    <div class="customer">
+                        <div class="avatar-placeholder">E</div>
+                        <div>
+                            <h4>Emma W.</h4>
+                            <span>Australia</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact bg-light">
+        <div class="container">
+            <h2 class="section-title">Ready for an Adventure?</h2>
+            <div class="contact-grid">
+                <div class="contact-info fade-in-up">
+                    <p>Get in touch with us to book your safari or if you have any questions. We are available 24/7 on
+                        WhatsApp.</p>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Main Safari Entrance, Tissamaharama, Sri Lanka</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <div>
+                            <h4>Phone / WhatsApp</h4>
+                            <p><a href="https://wa.me/94770000000" target="_blank">+94 77 000 0000</a></p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p><a href="mailto:bookings@srilankasafari.com">bookings@srilankasafari.com</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-container fade-in-up delay-1">
+                    <!-- Formspree endpoint -->
+                    <form action="https://formspree.io/f/xqeykzwr" method="POST" id="contact-form">
+                        <div class="form-group">
+                            <input type="text" name="name" placeholder="Your Name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="Your Email" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <select name="package" class="form-control">
+                                <option value="">Select a Package (Optional)</option>
+                                <option value="Morning Safari">Morning Safari</option>
+                                <option value="Evening Safari">Evening Safari</option>
+                                <option value="Full-Day Safari">Full-Day Safari</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea name="message" placeholder="Your Message" required class="form-control"
+                                rows="4"></textarea>
+                        </div>
+                        <!-- Google reCAPTCHA -->
+                        <div class="g-recaptcha pb-3" data-sitekey="6LfrjoEsAAAAADfDznu9n0sdW4STGjtZloW33xwf"></div>
+                        <button type="submit" class="btn-primary w-100">Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="contact-map fade-in-up delay-2" style="margin-top: 40px;">
+                <!-- Embed Google Maps Iframe -->
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15870.363914902179!2d81.28291415!3d6.28479205!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae69bb3f66a7b29%3A0xe9f7ee7fe252ee3f!2sTissamaharama%2C%20Sri%20Lanka!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+                    width="100%" height="350" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-col">
+                <a href="#" class="logo">SriLanka<span>Safari</span></a>
+                <p>Your trusted partner for premium wildlife encounters in Sri Lanka. Experience nature like never
+                    before.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#packages">Tour Packages</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>About</h3>
+                <ul>
+                    <li><a href="#about">Our Story</a></li>
+                    <li><a href="#testimonials">Reviews</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col social-col">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tripadvisor"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Sri Lanka Safari. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/94770000000" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
