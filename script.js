@@ -87,10 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic Google Sheets Integration
     // Replace these URLs with your Google Sheets "Publish to web" CSV URLs
     const GOOGLE_SHEETS = {
-        settings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?gid=0&single=true&output=csv', // Substitute gid for Site Settings tab
-        packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?gid=0&single=true&output=csv',
-        gallery: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?gid=0&single=true&output=csv',
-        testimonials: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?gid=0&single=true&output=csv'
+        settings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
+        packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
+        gallery: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
+        testimonials: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0'
     };
 
     let WHATSAPP_NUMBER = '94770000000';
