@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Experience the Wild: Premium Jeep Safari Tours in Sri Lanka</title>
+    <title id="site-title">Experience the Wild: Premium Jeep Safari Tours in Sri Lanka</title>
     <meta name="description"
         content="Book your premium Jeep Safari adventure in Sri Lanka. Professional guides, comfortable 4x4 vehicles, and unforgettable wildlife encounters with leopards and elephants.">
     <!-- Basic Caching Meta Tags -->
@@ -29,10 +29,14 @@
 </head>
 
 <body>
+    <!-- Announcement Banner -->
+    <div id="announcement-banner"
+        style="display: none; background-color: var(--secondary-color, #E27D60); color: white; text-align: center; padding: 10px; font-weight: 500; font-family: 'Outfit', sans-serif; z-index: 2000; position: relative; font-size: 0.95rem; letter-spacing: 0.5px;">
+    </div>
     <!-- Navbar -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
-            <a href="#" class="logo">SriLanka<span>Safari</span></a>
+            <a href="#" class="logo" id="header-logo">SriLanka<span>Safari</span></a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#packages">Packages</a></li>
@@ -323,8 +327,9 @@
     <footer>
         <div class="container footer-content">
             <div class="footer-col">
-                <a href="#" class="logo">SriLanka<span>Safari</span></a>
-                <p>Your trusted partner for premium wildlife encounters in Sri Lanka. Experience nature like never
+                <a href="#" class="logo" id="footer-logo">SriLanka<span>Safari</span></a>
+                <p id="footer-desc">Your trusted partner for premium wildlife encounters in Sri Lanka. Experience nature
+                    like never
                     before.</p>
             </div>
             <div class="footer-col">
@@ -353,7 +358,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Sri Lanka Safari. All Rights Reserved.</p>
+            <p id="footer-copyright">&copy; 2026 Sri Lanka Safari. All Rights Reserved.</p>
         </div>
     </footer>
 

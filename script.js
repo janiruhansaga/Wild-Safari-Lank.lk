@@ -87,12 +87,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Dynamic Google Sheets Integration
     // Replace these URLs with your Google Sheets "Publish to web" CSV URLs
     const GOOGLE_SHEETS = {
+        settings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZXM35_jHJ-3_F6M8m0z0E2l2SkcnLyrUUzrQCXaceAYyLCVD1f8m12yPoC_qK553mo-WDBWGW4J4R/pub?gid=0&single=true&output=csv', // Substitute gid for Site Settings tab
         packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZXM35_jHJ-3_F6M8m0z0E2l2SkcnLyrUUzrQCXaceAYyLCVD1f8m12yPoC_qK553mo-WDBWGW4J4R/pub?gid=0&single=true&output=csv',
         gallery: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZXM35_jHJ-3_F6M8m0z0E2l2SkcnLyrUUzrQCXaceAYyLCVD1f8m12yPoC_qK553mo-WDBWGW4J4R/pub?gid=0&single=true&output=csv',
         testimonials: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZXM35_jHJ-3_F6M8m0z0E2l2SkcnLyrUUzrQCXaceAYyLCVD1f8m12yPoC_qK553mo-WDBWGW4J4R/pub?gid=0&single=true&output=csv'
     };
 
     const WHATSAPP_NUMBER = '94770000000';
+
+    window.bookPackage = function (packageTitle) {
+        const clientName = prompt("Please enter your name for the booking:");
+        if (clientName) {
+            const waText = encodeURIComponent(`Hi, I'm ${clientName}. I would like to book the ${packageTitle} package.`);
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${waText}`, '_blank');
+        }
+    };
 
     function loadGoogleSheetData(url, templateFn) {
         if (!url || url.includes('YOUR_')) return; // Fallback to static HTML if not configured
@@ -109,6 +118,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function renderSiteSettings(data) {
+        if (!data || data.length === 0) return;
+
+        // Supports both single-row-columns and Key-Value row formats
+        let settings = data[0];
+        if (data[0].Key && data[0].Value) {
+            settings = {};
+            data.forEach(item => {
+                if (item.Key) settings[item.Key] = item.Value;
+            });
+        }
+
+        if (settings.Title) {
+            const el = document.getElementById('site-title');
+            if (el) el.innerText = settings.Title;
+        }
+        if (settings.HeaderLogo) {
+            const el = document.getElementById('header-logo');
+            if (el) el.innerHTML = settings.HeaderLogo;
+        }
+        if (settings.FooterLogo) {
+            const el = document.getElementById('footer-logo');
+            if (el) el.innerHTML = settings.FooterLogo;
+        }
+        if (settings.FooterDesc) {
+            const el = document.getElementById('footer-desc');
+            if (el) el.innerText = settings.FooterDesc;
+        }
+        if (settings.Copyright) {
+            const el = document.getElementById('footer-copyright');
+            if (el) el.innerHTML = settings.Copyright;
+        }
+        if (settings.Announcement && settings.Announcement.trim() !== '') {
+            const el = document.getElementById('announcement-banner');
+            if (el) {
+                el.innerText = settings.Announcement;
+                el.style.display = 'block';
+            }
+        }
+    }
+
     function renderPackages(data) {
         const container = document.getElementById('dynamic-packages');
         if (!data || data.length === 0 || !data[0].Title) return;
@@ -116,12 +166,14 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
         data.forEach((item, index) => {
             if (!item.Title) return;
+            if (item.Status && item.Status.toUpperCase() === 'INACTIVE') return; // Skip inactive packages
+
             const delayClass = index === 0 ? '' : `delay-${index > 2 ? 2 : index}`;
             let badgeHtml = '';
             if (item.Badge === 'Popular') badgeHtml = `<div class="package-badge">Popular</div>`;
             if (item.Badge === 'Ultimate') badgeHtml = `<div class="package-badge bg-accent">Ultimate</div>`;
 
-            const waText = encodeURIComponent(`I'm interested in the ${item.Title}`);
+            const safeTitle = item.Title.replace(/'/g, "\\'");
 
             container.innerHTML += `
                 <div class="package-card fade-in-up ${delayClass}">
@@ -138,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li><i class="fas fa-check-circle"></i> ${item.Pickup}</li>
                             <li><i class="fas fa-check-circle"></i> ${item.Extras}</li>
                         </ul>
-                        <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${waText}" target="_blank" class="btn-primary-small w-100 text-center">Book Now</a>
+                        <button onclick="window.bookPackage('${safeTitle}')" class="btn-primary-small w-100 text-center" style="border: none;">Book Now</button>
                     </div>
                 </div>
             `;
@@ -201,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize data fetching
+    loadGoogleSheetData(GOOGLE_SHEETS.settings, renderSiteSettings);
     loadGoogleSheetData(GOOGLE_SHEETS.packages, renderPackages);
     loadGoogleSheetData(GOOGLE_SHEETS.gallery, renderGallery);
     loadGoogleSheetData(GOOGLE_SHEETS.testimonials, renderTestimonials);
