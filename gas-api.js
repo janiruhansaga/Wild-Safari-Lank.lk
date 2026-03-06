@@ -36,12 +36,16 @@ function doGet(e) {
             const settingsSheet = sheetApp.getSheetByName("Site_Settings") || sheetApp.getSheetByName("Settings");
             const packagesSheet = sheetApp.getSheetByName("Safari_Packages") || sheetApp.getSheetByName("Packages");
             const bookingsSheet = sheetApp.getSheetByName("Bookings");
+            const gallerySheet = sheetApp.getSheetByName("Gallery");
+            const testimonialsSheet = sheetApp.getSheetByName("Testimonials");
 
             const settings = readData(settingsSheet);
             const packages = readData(packagesSheet);
             const bookings = readData(bookingsSheet);
+            const gallery = readData(gallerySheet);
+            const testimonials = readData(testimonialsSheet);
 
-            return successRes({ settings, packages, bookings });
+            return successRes({ settings, packages, bookings, gallery, testimonials });
         }
 
         return errorRes("Invalid GET action parameter.");
@@ -96,6 +100,20 @@ function doPost(e) {
             if (!sheet) return errorRes("Packages sheet not found.");
             writeData(sheet, payload.data);
             return successRes("Safari Packages updated successfully!");
+        }
+
+        if (action === 'updateGallery') {
+            const sheet = sheetApp.getSheetByName("Gallery");
+            if (!sheet) return errorRes("Gallery sheet not found.");
+            writeData(sheet, payload.data);
+            return successRes("Gallery updated successfully!");
+        }
+
+        if (action === 'updateTestimonials') {
+            const sheet = sheetApp.getSheetByName("Testimonials");
+            if (!sheet) return errorRes("Testimonials sheet not found.");
+            writeData(sheet, payload.data);
+            return successRes("Testimonials updated successfully!");
         }
 
         return errorRes("Invalid POST action parameter.");

@@ -115,6 +115,10 @@
                     class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
                     <i class="fas fa-envelope"></i> <span class="hidden md:inline">Bookings</span>
                 </button>
+                <button onclick="switchTab('gallery')" id="tab-btn-gallery"
+                    class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-800 transition">
+                    <i class="fas fa-images"></i> <span class="hidden md:inline">Gallery</span>
+                </button>
                 <div class="mt-auto hidden md:block pt-8"></div>
                 <button onclick="logout()"
                     class="flex-1 md:flex-none flex justify-center md:justify-start items-center gap-3 px-4 py-3 text-red-400 hover:bg-gray-800 hover:text-red-300 rounded-lg transition">
@@ -212,7 +216,37 @@
                 </div>
 
             </div>
+
+            <!-- Gallery Tab -->
+            <div id="tab-gallery" class="tab-content hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Media Gallery</h2>
+                        <p class="text-gray-500 text-sm">Manage global images, upload, replace, or delete.</p>
+                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        <button onclick="addNewGalleryImage()"
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition flex-1 sm:flex-none flex justify-center items-center gap-2">
+                            <i class="fas fa-plus"></i> Add Image
+                        </button>
+                        <button onclick="saveGallery()"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg font-semibold shadow-md transition flex-1 sm:flex-none flex justify-center items-center gap-2">
+                            <i class="fas fa-save"></i> Save All
+                        </button>
+                    </div>
+                </div>
+                <div id="gallery-loader"
+                    class="bg-white rounded-xl shadow-sm border border-gray-200 text-center py-12 text-gray-500"><i
+                        class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                    <p>Loading gallery...</p>
+                </div>
+                <div id="gallery-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 hidden">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+
         </div>
+    </div>
     </div>
 
     <!-- Application Script -->
@@ -221,7 +255,7 @@
         const API_URL = "https://script.google.com/macros/s/AKfycbyGSNpIS6fZN6ca0gBXiSjxeIlTBOX7TI0YPy3rDNEHfgaYC6El9dSmzUQERAgm2W1VpQ/exec";
         let apiToken = localStorage.getItem('safari_admin_token') || '';
         let apiUser = localStorage.getItem('safari_admin_user') || '';
-        let appData = { settings: [], packages: [], bookings: [] };
+        let appData = { settings: [], packages: [], bookings: [], gallery: [] };
 
         const loginScreen = document.getElementById('login-screen');
         const dashboard = document.getElementById('dashboard');
@@ -320,6 +354,7 @@
                     renderSettings();
                     renderPackages();
                     renderBookings();
+                    if (appData.gallery) renderGallery();
                 } else {
                     showToast(json.message, true);
                     if (json.message.includes('Invalid token')) logout();
@@ -548,6 +583,87 @@
                 `;
                 tbody.insertAdjacentHTML('beforeend', html);
             });
+        }
+
+        // Render Gallery
+        function renderGallery() {
+            document.getElementById('gallery-loader').classList.add('hidden');
+            const listContainer = document.getElementById('gallery-list');
+            listContainer.classList.remove('hidden');
+            listContainer.innerHTML = '';
+
+            if (!appData.gallery) appData.gallery = [];
+
+            appData.gallery.forEach((img, index) => {
+                const imgUrl = img.ImageURL || img.url || '';
+                const altText = img.AltText || img.alt || 'Gallery Image';
+
+                // Track original keys for saving
+                const urlKey = img.ImageURL !== undefined ? 'ImageURL' : 'url';
+                const altKey = img.AltText !== undefined ? 'AltText' : 'alt';
+
+                const html = `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+                        <div class="h-48 bg-gray-100 relative group border-b">
+                            ${imgUrl ? `<img src="${imgUrl}" class="w-full h-full object-cover" />` : `<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="fas fa-image text-4xl"></i></div>`}
+                        </div>
+                        <div class="p-4 flex-1 flex flex-col gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Image URL</label>
+                                <div class="flex items-stretch shadow-sm">
+                                    <input type="text" id="gal-${index}-url" data-gal-idx="${index}" data-gal-key="${urlKey}" value="${imgUrl}" placeholder="Paste URL" class="gallery-input flex-1 px-2 py-1.5 border rounded-l outline-none text-xs focus:border-blue-500">
+                                    <label class="bg-gray-50 border border-l-0 px-2 py-1.5 cursor-pointer hover:bg-gray-100 flex items-center transition rounded-r">
+                                        <i class="fas fa-upload text-gray-500"></i>
+                                        <input type="file" class="hidden" accept="image/*" onchange="uploadImage(this, 'gal-${index}-url')">
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Alt Text</label>
+                                <input type="text" data-gal-idx="${index}" data-gal-key="${altKey}" value="${altText}" class="gallery-input w-full px-2 py-1.5 border shadow-sm rounded focus:border-blue-500 outline-none text-xs">
+                            </div>
+                            <div class="mt-auto pt-3 flex justify-end">
+                                <button onclick="deleteGalleryImage(${index})" class="text-red-500 hover:text-red-700 text-xs font-bold px-3 py-1.5 rounded hover:bg-red-50 transition flex items-center gap-1">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function addNewGalleryImage() {
+            if (!appData.gallery) appData.gallery = [];
+            const newImg = {};
+            if (appData.gallery.length > 0) {
+                Object.keys(appData.gallery[0]).forEach(k => newImg[k] = "");
+            } else {
+                newImg.url = "";
+                newImg.alt = "";
+            }
+            appData.gallery.unshift(newImg);
+            renderGallery();
+        }
+
+        async function deleteGalleryImage(index) {
+            if (confirm("Permanently delete this image from the gallery?")) {
+                appData.gallery.splice(index, 1);
+                await sendUpdate('updateGallery', appData.gallery);
+                renderGallery();
+            }
+        }
+
+        async function saveGallery() {
+            const inputs = document.querySelectorAll('.gallery-input');
+            inputs.forEach(inp => {
+                const idx = parseInt(inp.getAttribute('data-gal-idx'));
+                const key = inp.getAttribute('data-gal-key');
+                appData.gallery[idx][key] = inp.value;
+            });
+            await sendUpdate('updateGallery', appData.gallery);
+            renderGallery();
         }
 
         // Master API POST Call
