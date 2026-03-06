@@ -7,6 +7,7 @@
 // 4. Copy the resulting Web App URL.
 // 5. Use this Web App URL in your admin.html login page and in your index.html form action!
 
+const ADMIN_USER = "admin"; // CHANGE THIS USERNAME
 const ADMIN_TOKEN = "admin123"; // CHANGE THIS PASSWORD to secure your dashboard!
 
 function doGet(e) {
@@ -19,14 +20,15 @@ function doGet(e) {
         };
 
         const action = e.parameter.action;
+        const user = e.parameter.user;
         const token = e.parameter.token;
 
         if (action === 'verify') {
-            if (token === ADMIN_TOKEN) return successRes({ valid: true });
-            return errorRes("Invalid Password");
+            if (user === ADMIN_USER && token === ADMIN_TOKEN) return successRes({ valid: true });
+            return errorRes("Invalid Username or Password");
         }
 
-        if (token !== ADMIN_TOKEN) return errorRes("Unauthorized access. Invalid token.");
+        if (user !== ADMIN_USER || token !== ADMIN_TOKEN) return errorRes("Unauthorized access. Invalid credentials.");
 
         const sheetApp = SpreadsheetApp.getActiveSpreadsheet();
 
@@ -80,7 +82,7 @@ function doPost(e) {
             return errorRes("No payload provided");
         }
 
-        if (payload.token !== ADMIN_TOKEN) return errorRes("Unauthorized! Invalid Password.");
+        if (payload.token !== ADMIN_TOKEN || payload.user !== ADMIN_USER) return errorRes("Unauthorized! Invalid User or Password.");
 
         if (action === 'updateSettings') {
             const sheet = sheetApp.getSheetByName("Site_Settings") || sheetApp.getSheetByName("Settings");
