@@ -158,14 +158,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSiteSettings(data) {
         if (!data) return;
 
-        // Supports both single-row-columns and Key-Value row formats
+        // Handles both direct Objects (API) and Array of Objects (Cache/PapaParse legacy)
         let settings = data;
-        if (Array.isArray(data) && data.length > 0) settings = data[0];
-        if (data[0].Key && data[0].Value) {
-            settings = {};
-            data.forEach(item => {
-                if (item.Key) settings[item.Key] = item.Value;
-            });
+        if (Array.isArray(data) && data.length > 0) {
+            settings = data[0];
+            if (data[0].Key && data[0].Value) {
+                settings = {};
+                data.forEach(item => {
+                    if (item.Key) settings[item.Key] = item.Value;
+                });
+            }
         }
 
         const siteName = settings.site_name || settings.Title;
