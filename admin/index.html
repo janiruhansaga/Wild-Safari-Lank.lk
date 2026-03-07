@@ -56,6 +56,11 @@
                     id="nav-bookings">
                     <i class="fas fa-calendar-check w-6"></i> Bookings
                 </a>
+                <a href="#" onclick="showTab('gallery')"
+                    class="flex items-center py-3 px-6 hover:bg-gray-700 nav-item transition duration-200"
+                    id="nav-gallery">
+                    <i class="fas fa-images w-6"></i> Gallery Manager
+                </a>
             </nav>
             <div class="px-6 mt-auto">
                 <button onclick="logout()"
@@ -87,6 +92,13 @@
                             <input type="text" id="set-site-name"
                                 class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none"
                                 placeholder="Experience the Wild">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">ImgBB API Key <span
+                                    class="text-xs text-gray-500 font-normal">(For Image Uploads)</span></label>
+                            <input type="text" id="set-imgbb-key"
+                                class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none"
+                                placeholder="Enter Free API Key">
                         </div>
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">Announcement Banner</label>
@@ -173,9 +185,17 @@
                             <div class="flex-1">
                                 <label class="block text-gray-700 text-sm font-bold mb-2">Favicon URL <span
                                         class="text-xs text-gray-500 font-normal">(.png, .ico)</span></label>
-                                <input type="text" id="set-favicon"
-                                    oninput="document.getElementById('prev-favicon').src=this.value || 'https://via.placeholder.com/32'"
-                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="set-favicon"
+                                        oninput="document.getElementById('prev-favicon').src=this.value || 'https://via.placeholder.com/32'"
+                                        class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                    <label
+                                        class="cursor-pointer bg-blue-100 hover:bg-blue-200 text-blue-700 py-2.5 px-3 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" class="hidden-view" accept="image/*"
+                                            onchange="uploadToImgBB(this, 'set-favicon', 'prev-favicon')">
+                                    </label>
+                                </div>
                             </div>
                             <img id="prev-favicon" src="https://via.placeholder.com/32"
                                 class="w-12 h-12 object-contain border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
@@ -186,9 +206,17 @@
                             <div class="flex-1">
                                 <label class="block text-gray-700 text-sm font-bold mb-2">Site Logo URL <span
                                         class="text-xs text-gray-500 font-normal">(Header & Footer)</span></label>
-                                <input type="text" id="set-logo"
-                                    oninput="document.getElementById('prev-logo').src=this.value || 'https://via.placeholder.com/150x50'"
-                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="set-logo"
+                                        oninput="document.getElementById('prev-logo').src=this.value || 'https://via.placeholder.com/150x50'"
+                                        class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                    <label
+                                        class="cursor-pointer bg-blue-100 hover:bg-blue-200 text-blue-700 py-2.5 px-3 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" class="hidden-view" accept="image/*"
+                                            onchange="uploadToImgBB(this, 'set-logo', 'prev-logo')">
+                                    </label>
+                                </div>
                             </div>
                             <img id="prev-logo" src="https://via.placeholder.com/150x50"
                                 class="w-24 h-12 object-contain border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
@@ -198,9 +226,17 @@
                         <div class="md:col-span-1 flex items-start space-x-4">
                             <div class="flex-1">
                                 <label class="block text-gray-700 text-sm font-bold mb-2">Hero Background URL</label>
-                                <input type="text" id="set-hero-bg"
-                                    oninput="document.getElementById('prev-hero-bg').src=this.value || 'https://via.placeholder.com/150x100'"
-                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="set-hero-bg"
+                                        oninput="document.getElementById('prev-hero-bg').src=this.value || 'https://via.placeholder.com/150x100'"
+                                        class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                    <label
+                                        class="cursor-pointer bg-blue-100 hover:bg-blue-200 text-blue-700 py-2.5 px-3 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" class="hidden-view" accept="image/*"
+                                            onchange="uploadToImgBB(this, 'set-hero-bg', 'prev-hero-bg')">
+                                    </label>
+                                </div>
                             </div>
                             <img id="prev-hero-bg" src="https://via.placeholder.com/150x100"
                                 class="w-24 h-16 object-cover border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
@@ -211,9 +247,17 @@
                             <div class="flex-1">
                                 <label class="block text-gray-700 text-sm font-bold mb-2">About Section Image
                                     URL</label>
-                                <input type="text" id="set-about-img"
-                                    oninput="document.getElementById('prev-about-img').src=this.value || 'https://via.placeholder.com/150x150'"
-                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                <div class="flex space-x-2">
+                                    <input type="text" id="set-about-img"
+                                        oninput="document.getElementById('prev-about-img').src=this.value || 'https://via.placeholder.com/150x150'"
+                                        class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                                    <label
+                                        class="cursor-pointer bg-blue-100 hover:bg-blue-200 text-blue-700 py-2.5 px-3 rounded-lg flex items-center justify-center transition">
+                                        <i class="fas fa-upload"></i>
+                                        <input type="file" class="hidden-view" accept="image/*"
+                                            onchange="uploadToImgBB(this, 'set-about-img', 'prev-about-img')">
+                                    </label>
+                                </div>
                             </div>
                             <img id="prev-about-img" src="https://via.placeholder.com/150x150"
                                 class="w-20 h-20 object-cover border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
@@ -296,6 +340,22 @@
                 </div>
             </div>
 
+            <!-- Gallery Tab -->
+            <div id="tab-gallery" class="tab-content hidden-view">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-700"><i class="fas fa-images mr-2 text-blue-500"></i>
+                        Gallery Manager</h2>
+                    <label
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg flex items-center justify-center transition cursor-pointer shadow-md">
+                        <i class="fas fa-plus-circle mr-2"></i> Add New Image
+                        <input type="file" class="hidden-view" accept="image/*" onchange="uploadToGallery(this)">
+                    </label>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="gallery-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -316,8 +376,16 @@
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Image URL</label>
-                            <input type="text" id="pkg-image"
-                                class="shadow-sm border rounded-lg w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <div class="flex space-x-2">
+                                <input type="text" id="pkg-image"
+                                    class="shadow-sm border rounded-lg w-full py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                <label
+                                    class="cursor-pointer bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-3 rounded-lg flex items-center justify-center transition">
+                                    <i class="fas fa-upload"></i>
+                                    <input type="file" class="hidden-view" accept="image/*"
+                                        onchange="uploadToImgBB(this, 'pkg-image', null)">
+                                </label>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-gray-700 text-sm font-bold mb-2">Price (USD)</label>

@@ -85,6 +85,38 @@ function doPost(e) {
             return respondJSON({ status: "success" });
         }
 
+        if (action === "addGalleryImage") {
+            const sheet = ss.getSheetByName("Gallery") || ss.getSheets()[0];
+            const headers = sheet.getRange(1, 1, 1, Math.max(sheet.getLastColumn(), 1)).getValues()[0];
+
+            if (headers.length === 0 || headers[0] === '') {
+                sheet.appendRow(['ImageURL', 'IsLarge']); // Initialize headers
+            }
+
+            const newRow = [];
+            const headerVals = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+            for (let i = 0; i < headerVals.length; i++) newRow.push('');
+
+            const imgCol = headerVals.indexOf('ImageURL');
+            const lgCol = headerVals.indexOf('IsLarge');
+
+            if (imgCol !== -1) newRow[imgCol] = payload.data.ImageURL;
+            else newRow[0] = payload.data.ImageURL;
+
+            if (lgCol !== -1) newRow[lgCol] = payload.data.IsLarge || "FALSE";
+            else if (newRow.length > 1) newRow[1] = payload.data.IsLarge || "FALSE";
+
+            sheet.appendRow(newRow);
+            return respondJSON({ status: "success" });
+        }
+
+        if (action === "deleteGalleryImage") {
+            const sheet = ss.getSheetByName("Gallery") || ss.getSheets()[0];
+            // +2 because Google Sheets is 1-indexed and row 1 is headers
+            sheet.deleteRow(payload.data.index + 2);
+            return respondJSON({ status: "success" });
+        }
+
         return respondJSON({ status: "error", message: "Invalid action" });
 
     } catch (err) {

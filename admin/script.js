@@ -49,6 +49,9 @@ function showTab(tabId) {
     } else if (tabId === 'bookings') {
         document.getElementById('page-title').innerText = "Recent Inquiries";
         loadBookings();
+    } else if (tabId === 'gallery') {
+        document.getElementById('page-title').innerText = "Gallery Manager";
+        loadGallery();
     }
 }
 
@@ -59,12 +62,14 @@ function loadSettings() {
         .then(data => {
             if (data.status === 'success') {
                 const s = data.data;
+                // General Settings
                 document.getElementById('set-site-name').value = s.site_name || s.Title || "";
                 document.getElementById('set-announcement').value = s.Announcement || "";
                 document.getElementById('set-hero-title').value = s.hero_title || "";
                 document.getElementById('set-hero-subtitle').value = s.hero_subtitle || "";
                 document.getElementById('set-about-title').value = s.about_title || "";
                 document.getElementById('set-about-desc').value = s.about_desc || "";
+                document.getElementById('set-imgbb-key').value = s.imgbb_api_key || "";
 
                 // Media Assets
                 const faviconInput = document.getElementById('set-favicon');
@@ -105,6 +110,7 @@ function saveSettings(e) {
         hero_subtitle: document.getElementById('set-hero-subtitle').value,
         about_title: document.getElementById('set-about-title').value,
         about_desc: document.getElementById('set-about-desc').value,
+        imgbb_api_key: document.getElementById('set-imgbb-key').value,
         favicon_url: document.getElementById('set-favicon').value,
         logo_url: document.getElementById('set-logo').value,
         hero_bg_url: document.getElementById('set-hero-bg').value,
@@ -285,4 +291,142 @@ function loadBookings() {
                 Swal.fire('Error', data.message || 'Failed to fetch Bookings sheet.', 'error');
             }
         });
+}
+
+// ----------------------------------------------------
+// IMGBB UPLOAD UTILITY
+// ----------------------------------------------------
+function executeImgBBUpload(file, onSuccess) {
+    const apiKey = document.getElementById('set-imgbb-key').value;
+    if (!apiKey) {
+        Swal.fire('Configure Gallery', 'Please enter your free ImgBB API Key in "Site Settings" first.', 'warning');
+        return;
+    }
+
+    Swal.fire({ title: 'Uploading...', text: 'Uploading image to Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Swal.close();
+                onSuccess(data.data.url);
+            } else {
+                Swal.fire('Upload Failed', data.error ? data.error.message : 'Unknown ImgBB Error', 'error');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire('Upload Failed', 'Network error while contacting ImgBB API.', 'error');
+        });
+}
+
+function uploadToImgBB(fileInput, targetUrlId, previewId) {
+    const file = fileInput.files[0];
+    if (!file) return;
+    fileInput.value = ""; // Reset input so same file can trigger again
+
+    executeImgBBUpload(file, (url) => {
+        document.getElementById(targetUrlId).value = url;
+        if (previewId) document.getElementById(previewId).src = url;
+
+        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+        Toast.fire({ icon: 'success', title: 'Image Uploaded!' });
+    });
+}
+
+// ----------------------------------------------------
+// GALLERY MANAGER ALGORITHMS
+// ----------------------------------------------------
+function loadGallery() {
+    Swal.fire({ title: 'Loading Gallery...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
+    fetch(`${API_URL}?action=getGallery&pwd=${encodeURIComponent(adminPassword)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const container = document.getElementById('gallery-grid');
+                container.innerHTML = '';
+
+                data.data.forEach((item, index) => {
+                    if (!item.ImageURL) return;
+                    container.innerHTML += `
+                        <div class="relative group rounded-lg overflow-hidden shadow-sm border h-48">
+                            <img src="${item.ImageURL}" alt="Gallery Image" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+                                <button onclick="deleteGalleryItem(${index})" class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transform hover:scale-105 transition">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                Swal.close();
+            } else {
+                Swal.fire('Error', data.message || 'Failed to load gallery', 'error');
+            }
+        });
+}
+
+function uploadToGallery(fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+    fileInput.value = "";
+
+    executeImgBBUpload(file, (url) => {
+        // Send to Google Sheets
+        Swal.fire({ title: 'Saving...', text: 'Adding to Database', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+        fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'addGalleryImage', pwd: adminPassword, data: { ImageURL: url, IsLarge: "FALSE" } })
+        })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === 'success') {
+                    const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                    Toast.fire({ icon: 'success', title: 'Added to Gallery' });
+                    loadGallery();
+                } else {
+                    Swal.fire('Error', d.message || 'Failed saving to Database', 'error');
+                }
+            });
+    });
+}
+
+function deleteGalleryItem(index) {
+    Swal.fire({
+        title: 'Delete Image?',
+        text: "This removes the image from the website entirely.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({ title: 'Deleting...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action: 'deleteGalleryImage', pwd: adminPassword, data: { index: index } })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                        Toast.fire({ icon: 'success', title: 'Deleted from Database' });
+                        loadGallery();
+                    } else {
+                        Swal.fire('Error', data.message || 'Deletion Failed', 'error');
+                    }
+                });
+        }
+    });
 }
