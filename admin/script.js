@@ -66,6 +66,23 @@ function loadSettings() {
                 document.getElementById('set-about-title').value = s.about_title || "";
                 document.getElementById('set-about-desc').value = s.about_desc || "";
 
+                // Media Assets
+                const faviconInput = document.getElementById('set-favicon');
+                faviconInput.value = s.favicon_url || "";
+                if (s.favicon_url) faviconInput.dispatchEvent(new Event('input'));
+
+                const logoInput = document.getElementById('set-logo');
+                logoInput.value = s.logo_url || "";
+                if (s.logo_url) logoInput.dispatchEvent(new Event('input'));
+
+                const heroBgInput = document.getElementById('set-hero-bg');
+                heroBgInput.value = s.hero_bg_url || "";
+                if (s.hero_bg_url) heroBgInput.dispatchEvent(new Event('input'));
+
+                const aboutImgInput = document.getElementById('set-about-img');
+                aboutImgInput.value = s.about_img_url || "";
+                if (s.about_img_url) aboutImgInput.dispatchEvent(new Event('input'));
+
                 if (s.theme_font_heading) document.getElementById('set-font-heading').value = s.theme_font_heading;
                 if (s.theme_font_body) document.getElementById('set-font-body').value = s.theme_font_body;
 
@@ -88,6 +105,10 @@ function saveSettings(e) {
         hero_subtitle: document.getElementById('set-hero-subtitle').value,
         about_title: document.getElementById('set-about-title').value,
         about_desc: document.getElementById('set-about-desc').value,
+        favicon_url: document.getElementById('set-favicon').value,
+        logo_url: document.getElementById('set-logo').value,
+        hero_bg_url: document.getElementById('set-hero-bg').value,
+        about_img_url: document.getElementById('set-about-img').value,
         theme_font_heading: document.getElementById('set-font-heading').value,
         theme_font_body: document.getElementById('set-font-body').value,
         contact_whatsapp: document.getElementById('set-whatsapp').value,

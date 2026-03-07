@@ -238,6 +238,28 @@ document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById('header-logo');
             if (el) el.innerHTML = settings.HeaderLogo;
         }
+
+        // --- GLOBAL MEDIA BINDINGS ---
+        if (settings.favicon_url) {
+            const el = document.getElementById('favicon');
+            if (el) el.href = settings.favicon_url;
+        }
+
+        if (settings.logo_url) {
+            const headerLogo = document.getElementById('header-logo');
+            if (headerLogo) headerLogo.innerHTML = `<img src="${settings.logo_url}" alt="Site Logo" style="height: 48px; width: auto; object-fit: contain;">`;
+        }
+
+        if (settings.hero_bg_url) {
+            const heroEl = document.getElementById('home');
+            if (heroEl) heroEl.style.backgroundImage = `url('${settings.hero_bg_url}')`;
+        }
+
+        if (settings.about_img_url) {
+            const aboutImgEl = document.getElementById('about-image');
+            if (aboutImgEl) aboutImgEl.src = settings.about_img_url;
+        }
+        // -----------------------------
         if (settings.FooterDesc) {
             const el = document.getElementById('footer-desc');
             if (el) el.innerText = settings.FooterDesc;

@@ -159,6 +159,65 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Global Media Assets -->
+                    <div class="mt-4 border-t pt-4">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4"><i
+                                class="fas fa-images mr-2 text-green-600"></i> Global Media Assets</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Favicon -->
+                        <div class="md:col-span-1 flex items-start space-x-4">
+                            <div class="flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Favicon URL <span
+                                        class="text-xs text-gray-500 font-normal">(.png, .ico)</span></label>
+                                <input type="text" id="set-favicon"
+                                    oninput="document.getElementById('prev-favicon').src=this.value || 'https://via.placeholder.com/32'"
+                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                            </div>
+                            <img id="prev-favicon" src="https://via.placeholder.com/32"
+                                class="w-12 h-12 object-contain border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
+                        </div>
+
+                        <!-- Site Logo -->
+                        <div class="md:col-span-1 flex items-start space-x-4">
+                            <div class="flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Site Logo URL <span
+                                        class="text-xs text-gray-500 font-normal">(Header & Footer)</span></label>
+                                <input type="text" id="set-logo"
+                                    oninput="document.getElementById('prev-logo').src=this.value || 'https://via.placeholder.com/150x50'"
+                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                            </div>
+                            <img id="prev-logo" src="https://via.placeholder.com/150x50"
+                                class="w-24 h-12 object-contain border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
+                        </div>
+
+                        <!-- Hero Background -->
+                        <div class="md:col-span-1 flex items-start space-x-4">
+                            <div class="flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">Hero Background URL</label>
+                                <input type="text" id="set-hero-bg"
+                                    oninput="document.getElementById('prev-hero-bg').src=this.value || 'https://via.placeholder.com/150x100'"
+                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                            </div>
+                            <img id="prev-hero-bg" src="https://via.placeholder.com/150x100"
+                                class="w-24 h-16 object-cover border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
+                        </div>
+
+                        <!-- About Image -->
+                        <div class="md:col-span-1 flex items-start space-x-4">
+                            <div class="flex-1">
+                                <label class="block text-gray-700 text-sm font-bold mb-2">About Section Image
+                                    URL</label>
+                                <input type="text" id="set-about-img"
+                                    oninput="document.getElementById('prev-about-img').src=this.value || 'https://via.placeholder.com/150x150'"
+                                    class="shadow-sm border rounded-lg w-full py-2.5 px-3 text-gray-700 focus:ring-2 flex-ring-blue-400 focus:outline-none">
+                            </div>
+                            <img id="prev-about-img" src="https://via.placeholder.com/150x150"
+                                class="w-20 h-20 object-cover border rounded shadow-sm bg-gray-50 mt-7" alt="Preview">
+                        </div>
+                    </div>
                     <div class="mt-8 flex justify-end">
                         <button type="submit"
                             class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg flex items-center transition duration-200 shadow-md">
@@ -173,7 +232,8 @@
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                     <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-gray-700"><i
-                                class="fas fa-list-ul mr-2 text-green-500"></i> Safari Packages</h3>
+                                class="fas fa-list-ul mr-2 text-green-500"></i>
+                            Safari Packages</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full leading-normal">
@@ -206,7 +266,8 @@
                 <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                     <div class="p-4 border-b bg-gray-50">
                         <h3 class="text-lg font-semibold text-gray-700"><i
-                                class="fas fa-inbox mr-2 text-indigo-500"></i> Recent Inquiries</h3>
+                                class="fas fa-inbox mr-2 text-indigo-500"></i>
+                            Recent Inquiries</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full leading-normal">
