@@ -297,33 +297,39 @@ function loadBookings() {
 // IMGBB UPLOAD UTILITY
 // ----------------------------------------------------
 function executeImgBBUpload(file, onSuccess) {
-    const apiKey = document.getElementById('set-imgbb-key').value;
+    let apiKey = document.getElementById('set-imgbb-key').value;
+    let apiDomain = "api.imgbb.com";
+
+    // If no custom ImgBB key is provided, gracefully fallback to the FreeImage.Host identical public API so it works out of the box
     if (!apiKey) {
-        Swal.fire('Configure Gallery', 'Please enter your free ImgBB API Key in "Site Settings" first.', 'warning');
-        return;
+        apiKey = '6d207e02198a847aa98d0a2a901485a5';
+        apiDomain = "freeimage.host";
     }
 
     Swal.fire({ title: 'Uploading...', text: 'Uploading image to Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("image", file); // Same format for both ImgBB & FreeImage.Host
 
-    fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+    // Determine the exact URL for either ImgBB or FreeImage.Host
+    const url = `https://${apiDomain}/api/1/upload?key=${apiKey}`;
+
+    fetch(url, {
         method: 'POST',
         body: formData
     })
         .then(res => res.json())
         .then(data => {
-            if (data.success) {
+            if (data.success || data.status_code === 200) {
                 Swal.close();
-                onSuccess(data.data.url);
+                onSuccess(data.image ? data.image.url : data.data.url);
             } else {
-                Swal.fire('Upload Failed', data.error ? data.error.message : 'Unknown ImgBB Error', 'error');
+                Swal.fire('Upload Failed', data.error ? (data.error.message || data.error) : 'Unknown Error', 'error');
             }
         })
         .catch(err => {
             console.error(err);
-            Swal.fire('Upload Failed', 'Network error while contacting ImgBB API.', 'error');
+            Swal.fire('Upload Failed', 'Network error while contacting ' + apiDomain, 'error');
         });
 }
 
