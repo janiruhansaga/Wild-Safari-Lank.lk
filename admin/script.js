@@ -164,7 +164,7 @@ function loadPackages() {
                             <td class="px-5 py-4 border-b border-gray-100 bg-white text-sm">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 w-12 h-12 shadow-sm">
-                                        <img class="w-full h-full rounded-lg object-cover" src="${pkg.ImageURL || 'https://via.placeholder.com/48'}" alt="" />
+                                        <img class="w-full h-full rounded-lg object-cover" src="${pkg.ImageURL || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg=='}" alt="" />
                                     </div>
                                     <div class="ml-4">
                                         <p class="text-gray-900 whitespace-no-wrap font-bold text-base">${pkg.Title || pkg.name}</p>
