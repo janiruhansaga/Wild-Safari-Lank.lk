@@ -112,14 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Dynamic Google Sheets Integration
-    // Replace these URLs with your Google Sheets "Publish to web" CSV URLs
-    const GOOGLE_SHEETS = {
-        settings: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
-        packages: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
-        gallery: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0',
-        testimonials: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQj0odaPYqdPDldPToN80MqAUQDvDUxFShoWWbHougyHjr0tFz3E38fX8e0bnTUpya-P0mXW_FfVGMH/pub?output=csv&gid=0'
-    };
+    // Apps Script API Endpoint Instead of PapaParse
+    const API_URL = "https://script.google.com/macros/s/AKfycbxbEZPxGvzSj7lyMrTF4BledGplB29oeSdqt8dSWmGNT5PHhbJXeTYYQZ_plL8XYh09_Q/exec";
 
     let WHATSAPP_NUMBER = '94770000000';
 
@@ -131,38 +125,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    function loadGoogleSheetData(url, templateFn, cacheKey) {
-        if (!url || url.includes('YOUR_')) return; // Fallback to static HTML if not configured
-
+    function loadGoogleSheetData(action, templateFn, cacheKey) {
         const CACHE_TIME_MS = 5 * 60 * 1000; // 5 minutes cache
         const cachedData = localStorage.getItem(cacheKey);
         const cachedTime = localStorage.getItem(`${cacheKey}_time`);
 
         if (cachedData && cachedTime && (Date.now() - cachedTime < CACHE_TIME_MS)) {
+            console.log(`Loading ${action} from cache`);
             templateFn(JSON.parse(cachedData));
             return;
         }
 
-        Papa.parse(url, {
-            download: true,
-            header: true,
-            complete: function (results) {
-                localStorage.setItem(cacheKey, JSON.stringify(results.data));
-                localStorage.setItem(`${cacheKey}_time`, Date.now());
-                templateFn(results.data);
-            },
-            error: function (err) {
-                console.error("Error parsing CSV:", err);
+        console.log(`Fetching ${action} from API`);
+        fetch(`${API_URL}?action=${action}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    localStorage.setItem(cacheKey, JSON.stringify(data.data));
+                    localStorage.setItem(`${cacheKey}_time`, Date.now());
+                    templateFn(data.data);
+                } else {
+                    console.error(`API Error for ${action}:`, data.message);
+                    if (cachedData) templateFn(JSON.parse(cachedData));
+                }
+            })
+            .catch(error => {
+                console.error(`Fetch Error for ${action}:`, error);
                 if (cachedData) templateFn(JSON.parse(cachedData));
-            }
-        });
+            });
     }
 
     function renderSiteSettings(data) {
-        if (!data || data.length === 0) return;
+        if (!data) return;
 
         // Supports both single-row-columns and Key-Value row formats
-        let settings = data[0];
+        let settings = data;
+        if (Array.isArray(data) && data.length > 0) settings = data[0];
         if (data[0].Key && data[0].Value) {
             settings = {};
             data.forEach(item => {
@@ -367,9 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize data fetching
-    loadGoogleSheetData(GOOGLE_SHEETS.settings, renderSiteSettings, 'safari_settings_cache');
-    loadGoogleSheetData(GOOGLE_SHEETS.packages, renderPackages, 'safari_packages_cache');
-    loadGoogleSheetData(GOOGLE_SHEETS.gallery, renderGallery, 'safari_gallery_cache');
-    loadGoogleSheetData(GOOGLE_SHEETS.testimonials, renderTestimonials, 'safari_testimonials_cache');
+    // Initialize data fetching via GAS API Action Names
+    loadGoogleSheetData('getSettings', renderSiteSettings, 'safari_settings_cache');
+    loadGoogleSheetData('getPackages', renderPackages, 'safari_packages_cache');
+    loadGoogleSheetData('getGallery', renderGallery, 'safari_gallery_cache');
+    loadGoogleSheetData('getTestimonials', renderTestimonials, 'safari_testimonials_cache');
 });

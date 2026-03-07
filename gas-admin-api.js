@@ -7,18 +7,9 @@ const ADMIN_PASSWORD = "admin"; // <--- CHANGE THIS BEFORE DEPLOYING
 function doGet(e) {
     const action = e.parameter.action;
     const pwd = e.parameter.pwd;
-
-    // Basic security check
-    if (pwd !== ADMIN_PASSWORD) {
-        return respondJSON({ status: "error", message: "Unauthorized: Incorrect Password" });
-    }
-
     const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-    if (action === "ping") {
-        return respondJSON({ status: "success", message: "Pong" });
-    }
-
+    // Public Routes (No password required for frontend display)
     if (action === "getSettings") {
         const sheet = ss.getSheetByName("Site_Settings") || ss.getSheetByName("Settings") || ss.getSheets()[0];
         if (!sheet) return respondJSON({ status: "error", message: "Settings sheet not found." });
@@ -29,6 +20,27 @@ function doGet(e) {
         const sheet = ss.getSheetByName("Safari_Packages") || ss.getSheetByName("Packages") || ss.getSheetByName("Sheet1") || ss.getSheets()[0];
         if (!sheet) return respondJSON({ status: "error", message: "Packages sheet not found." });
         return respondJSON({ status: "success", data: getSheetDataAsArray(sheet) });
+    }
+
+    if (action === "getGallery") {
+        const sheet = ss.getSheetByName("Gallery") || ss.getSheets()[0];
+        if (!sheet) return respondJSON({ status: "error", message: "Gallery sheet not found." });
+        return respondJSON({ status: "success", data: getSheetDataAsArray(sheet) });
+    }
+
+    if (action === "getTestimonials") {
+        const sheet = ss.getSheetByName("Testimonials") || ss.getSheets()[0];
+        if (!sheet) return respondJSON({ status: "error", message: "Testimonials sheet not found." });
+        return respondJSON({ status: "success", data: getSheetDataAsArray(sheet) });
+    }
+
+    // Protected Routes (Requires Password)
+    if (pwd !== ADMIN_PASSWORD) {
+        return respondJSON({ status: "error", message: "Unauthorized: Incorrect Password" });
+    }
+
+    if (action === "ping") {
+        return respondJSON({ status: "success", message: "Pong" });
     }
 
     if (action === "getBookings") {
