@@ -279,17 +279,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderPackages(data) {
         const container = document.getElementById('dynamic-packages');
-        if (!data || data.length === 0) return;
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="col-12 text-center py-5"><h3 style="color:var(--gray-color);">New safari packages coming soon!</h3></div>';
+            return;
+        }
 
         container.innerHTML = '';
+        let activeCount = 0;
+
+        // DEBUG: Ensure the structure looks correctly fetched and keys exist
+        console.log("Fetched Packages Data Array:", data);
+
         data.forEach((item, index) => {
             const pkgName = item.name || item.Title;
             if (!pkgName) return;
 
-            const isActive = item.is_active ? String(item.is_active).toUpperCase() : null;
-            const legacyStatus = item.Status ? String(item.Status).toUpperCase() : null;
-            if (isActive === 'FALSE' || legacyStatus === 'INACTIVE') return;
+            const isActiveStr = item.is_active ? String(item.is_active).trim().toUpperCase() : null;
+            const legacyStatusStr = item.Status ? String(item.Status).trim().toUpperCase() : null;
 
+            // Check mapping logic (if explicitly false or inactive, skip this row)
+            if (isActiveStr === 'FALSE' || legacyStatusStr === 'INACTIVE') return;
+
+            activeCount++;
             const delayClass = index === 0 ? '' : `delay-${index > 2 ? 2 : index}`;
 
             const priceUsd = item.price_usd ? `<span style="font-weight: bold; color: var(--primary-color);">USD ${item.price_usd}</span>` : '';
@@ -330,6 +341,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         });
+
+        if (activeCount === 0) {
+            container.innerHTML = '<div class="col-12 text-center py-5" style="grid-column: 1 / -1;"><h3 style="color:var(--gray-color); text-align: center; width: 100%;">New safari packages coming soon!</h3></div>';
+        }
     }
 
     function renderGallery(data) {
