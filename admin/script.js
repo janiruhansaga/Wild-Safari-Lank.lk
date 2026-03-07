@@ -299,33 +299,12 @@ function loadBookings() {
 function executeImgBBUpload(file, onSuccess) {
     let apiKey = document.getElementById('set-imgbb-key').value;
 
-    Swal.fire({ title: 'Uploading...', text: 'Uploading image to Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-
     if (!apiKey) {
-        // Fallback to Catbox.moe which requires no API key and has full CORS support
-        const formData = new FormData();
-        formData.append("reqtype", "fileupload");
-        formData.append("fileToUpload", file);
-
-        fetch('https://catbox.moe/user/api.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(res => res.text())
-            .then(text => {
-                if (text && text.startsWith('http')) {
-                    Swal.close();
-                    onSuccess(text);
-                } else {
-                    Swal.fire('Upload Failed', text || 'Unknown Error', 'error');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                Swal.fire('Upload Failed', 'Network error while contacting Cloud.', 'error');
-            });
+        Swal.fire('Configure ImgBB', 'Please enter your free ImgBB API Key in "Site Settings" first. Get one at api.imgbb.com', 'warning');
         return;
     }
+
+    Swal.fire({ title: 'Uploading...', text: 'Uploading image to Cloud...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
     const formData = new FormData();
     formData.append("image", file);
