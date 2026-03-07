@@ -63,6 +63,12 @@ function loadSettings() {
                 document.getElementById('set-announcement').value = s.Announcement || "";
                 document.getElementById('set-hero-title').value = s.hero_title || "";
                 document.getElementById('set-hero-subtitle').value = s.hero_subtitle || "";
+                document.getElementById('set-about-title').value = s.about_title || "";
+                document.getElementById('set-about-desc').value = s.about_desc || "";
+
+                if (s.theme_font_heading) document.getElementById('set-font-heading').value = s.theme_font_heading;
+                if (s.theme_font_body) document.getElementById('set-font-body').value = s.theme_font_body;
+
                 document.getElementById('set-whatsapp').value = s.contact_whatsapp || "";
                 document.getElementById('set-footer-desc').value = s.FooterDesc || "";
                 Swal.close();
@@ -80,6 +86,10 @@ function saveSettings(e) {
         Announcement: document.getElementById('set-announcement').value,
         hero_title: document.getElementById('set-hero-title').value,
         hero_subtitle: document.getElementById('set-hero-subtitle').value,
+        about_title: document.getElementById('set-about-title').value,
+        about_desc: document.getElementById('set-about-desc').value,
+        theme_font_heading: document.getElementById('set-font-heading').value,
+        theme_font_body: document.getElementById('set-font-body').value,
         contact_whatsapp: document.getElementById('set-whatsapp').value,
         FooterDesc: document.getElementById('set-footer-desc').value
     };

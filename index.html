@@ -99,8 +99,9 @@
     <section id="about" class="about bg-light">
         <div class="container about-container">
             <div class="about-text fade-in-up">
-                <h2 class="section-title" style="text-align: left;">About Our Safari</h2>
-                <p>We are a localized team of passionate wildlife enthusiasts and experienced safari drivers dedicated
+                <h2 class="section-title" style="text-align: left;" id="about-title">About Our Safari</h2>
+                <p id="about-desc">We are a localized team of passionate wildlife enthusiasts and experienced safari
+                    drivers dedicated
                     to providing the ultimate Sri Lankan safari experience. With years of tracking experience, our
                     guides know exactly where to find the elusive leopards, majestic elephants, and vibrant birdlife.
                 </p>
@@ -228,8 +229,8 @@
                     </div>
                 </div>
                 <div class="contact-form-container fade-in-up delay-1">
-                    <!-- Formspree endpoint -->
-                    <form action="https://formspree.io/f/xqeykzwr" method="POST" id="contact-form">
+                    <!-- Google Apps Script API -->
+                    <form id="contact-form">
                         <div class="form-group">
                             <input type="text" name="name" placeholder="Your Name" required class="form-control">
                         </div>

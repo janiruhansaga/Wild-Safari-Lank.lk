@@ -79,8 +79,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', function (e) {
-            // No custom preventDefault here so it can submit to Formspree,
-            // but we can add loading states or validation here if needed.
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+
+            const formData = new FormData(contactForm);
+            const searchParams = new URLSearchParams();
+            for (const pair of formData) {
+                searchParams.append(pair[0], pair[1]);
+            }
+
+            fetch("https://script.google.com/macros/s/AKfycbxbEZPxGvzSj7lyMrTF4BledGplB29oeSdqt8dSWmGNT5PHhbJXeTYYQZ_plL8XYh09_Q/exec", {
+                method: 'POST',
+                body: searchParams
+            })
+                .then(res => res.json())
+                .then(data => {
+                    btn.innerText = "Sent Successfully!";
+                    contactForm.reset();
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error("Error submitting form", error);
+                    btn.innerText = "Error. Try Again.";
+                    btn.disabled = false;
+                });
         });
     }
 
@@ -162,6 +190,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settings.hero_subtitle) {
             const el = document.getElementById('hero-subtitle');
             if (el) el.innerText = settings.hero_subtitle;
+        }
+
+        if (settings.about_title) {
+            const el = document.getElementById('about-title');
+            if (el) el.innerText = settings.about_title;
+        }
+
+        if (settings.about_desc) {
+            const el = document.getElementById('about-desc');
+            if (el) el.innerText = settings.about_desc;
+        }
+
+        if (settings.theme_font_heading) {
+            const fontName = settings.theme_font_heading;
+            document.documentElement.style.setProperty('--font-heading', `'${fontName}', serif`);
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@400;600;700&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+        }
+
+        if (settings.theme_font_body) {
+            const fontName = settings.theme_font_body;
+            document.documentElement.style.setProperty('--font-main', `'${fontName}', sans-serif`);
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/ /g, '+')}:wght@400;500;600&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
         }
 
         if (settings.contact_whatsapp) {
